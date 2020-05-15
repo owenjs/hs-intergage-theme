@@ -1,0 +1,111 @@
+{# _grid #}
+{#       #}
+{# Grid Layout, based on BootStrap v5.0.0-alpha1 #}
+
+{% include './mixins/_grid.css' %}
+
+{% set grid_columns = 12 %}
+{% set grid_gutter_width = '1.5rem' %}
+{% set grid_row_columns = 6 %}
+
+{% set grid_breakpoints = [
+  ('xs', '0'),
+  ('sm', '576'),
+  ('md', '768'),
+  ('lg', '992'),
+  ('xl', '1200'),
+  ('xxl', '1400')
+] %}
+
+{# Row #}
+{#     #}
+{# Rows contain your columns #}
+
+.row,
+.row-fluid {
+  {# make-row #}
+  --bs-gutter-x: {{ grid_gutter_width }};
+  --bs-gutter-y: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(var(--bs-gutter-y) * -1);
+  margin-right: calc(var(--bs-gutter-x) / -2);
+  margin-left: calc(var(--bs-gutter-x) / -2);
+}
+
+.row > *,
+.row-fluid > * {
+  {# make-col-ready #}
+  {# Prevent columns from becoming too narrow when at smaller grid tiers by
+     always setting `width: 100%;`. This works because we set the width
+     later on to override this initial width. #}
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%; {# Prevent `.col-auto`, `.col` (& responsive variants) from breaking out the grid #}
+  padding-right: calc(var(--bs-gutter-x) / 2);
+  padding-left: calc(var(--bs-gutter-x) / 2);
+  margin-top: var(--bs-gutter-y);
+}
+
+{% macro breakpoint_min(infix, breakpoint)  %}{% if breakpoint != 0 %}{{ breakpoint }}{% else %}{{ '' }}{% endif %}{% endmacro %}
+
+{% macro breakpoint_infix(infix, breakpoint)  %}{% if breakpoint != 0 %}{{ '-' ~ infix }}{% else %}{{ '' }}{% endif %}{% endmacro %}
+
+{% macro media_breakpoint_up(infix, breakpoint) %}
+  {% set min = breakpoint_min(infix, breakpoint) %}
+
+  {% if min %}
+    @media (min-width: {{ min ~ 'px' }}) {
+      {{ caller() }}
+    }
+  {% else %}
+    {{ caller() }}
+  {% endif %}
+{% endmacro %}
+
+{% for infix, breakpoint in grid_breakpoints %}
+  {% set infix = breakpoint_infix(infix, breakpoint) %} 
+
+  {% call media_breakpoint_up(infix, breakpoint) %}
+    {# Provide basic `.col-{bp}` classes for equal-width flexbox columns #}
+    .col{{ infix }} {
+      flex: 1 0 0%;
+      min-width: 0;
+    }
+
+    .row-cols{{ infix }}-auto > * {
+      {{ make_col_auto() }}
+    }
+
+    {% if grid_row_columns > 0 %}
+      {% for i in range(grid_row_columns) %}
+        .row-cols{{ infix }}-{{ i + 1 }} > * {
+          {{ row_cols(i + 1) }}
+        }
+      {% endfor %}
+    {% endif %}
+
+    .col{{ infix }}-auto {
+      {{ make_col_auto() }}
+    }
+
+    {% if grid_columns > 0 %}
+      {% for i in range(grid_columns) %}
+        .col{{ infix }}-{{ i + 1 }} {
+          {{ make_col(i + 1, grid_columns) }}
+        }
+      {% endfor %}
+
+      {# `grid_columns - 1` because offsetting by the width of an entire row isn't possible #}
+      {% for i in range(grid_columns - 1) %}
+        {% if not (infix == "" and i == 0) %} {# Avoid emitting useless .offset-0 #}
+          .offset{{ infix }}-{{ i }} {
+            {{ make_col_offset(i, grid_columns) }}
+          }
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+  {% endcall %}
+  
+{% endfor %}

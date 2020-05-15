@@ -1,0 +1,27 @@
+{# Grid system #}
+{#       #}
+{# Generate semantic grid columns with these mixins #}
+
+{% macro make_col(size, columns) %}
+  flex: 0 0 auto;
+  width: {{ size / columns ~ '%' }};
+{% endmacro %}
+
+{% macro make_col_auto() %}
+  flex: 0 0 auto;
+  width: auto;
+{% endmacro %}
+
+{% macro make_col_offset(size, columns) %}
+  margin-left: {{ size / columns ~ '%' }};
+{% endmacro %}
+
+{# Row columns
+  Specify on a parent element(e.g., .row) to force immediate children into NN
+  numberof columns. Supports wrapping to new lines, but does not do a Masonry
+  style grid. #}
+
+{% macro row_cols(count) %}
+  flex: 0 0 auto;
+  width: {{ 100 / count ~ '%'}};
+{% endmacro %}
