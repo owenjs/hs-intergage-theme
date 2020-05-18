@@ -64,11 +64,12 @@
 {% endmacro %}
 
 {% for infix, breakpoint in grid_breakpoints %}
-  {% set infix = breakpoint_infix(infix, breakpoint) %} 
+  {% set infix = breakpoint_infix(infix, breakpoint) %}
 
   {% call media_breakpoint_up(infix, breakpoint) %}
     {# Provide basic `.col-{bp}` classes for equal-width flexbox columns #}
-    .col{{ infix }} {
+    .col{{ infix }},
+    .span{{ infix }} {
       flex: 1 0 0%;
       min-width: 0;
     }
@@ -91,7 +92,8 @@
 
     {% if grid_columns > 0 %}
       {% for i in range(grid_columns) %}
-        .col{{ infix }}-{{ i + 1 }} {
+        .col{{ infix }}-{{ i + 1 }},
+        .span{{ i + 1 }}{{ infix }} {
           {{ make_col(i + 1, grid_columns) }}
         }
       {% endfor %}

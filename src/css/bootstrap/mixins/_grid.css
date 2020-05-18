@@ -4,7 +4,7 @@
 
 {% macro make_col(size, columns) %}
   flex: 0 0 auto;
-  width: {{ size / columns ~ '%' }};
+  width: {{ (size / columns * 100)|round(2) ~ '%' }};
 {% endmacro %}
 
 {% macro make_col_auto() %}
@@ -13,7 +13,7 @@
 {% endmacro %}
 
 {% macro make_col_offset(size, columns) %}
-  margin-left: {{ size / columns ~ '%' }};
+  margin-left: {{ (size / columns * 100)|round(2) ~ '%' }};
 {% endmacro %}
 
 {# Row columns
