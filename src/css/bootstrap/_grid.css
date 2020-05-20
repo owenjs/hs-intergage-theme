@@ -37,7 +37,7 @@
 .row-fluid > * {
   {# make-col-ready #}
   {# Prevent columns from becoming too narrow when at smaller grid tiers by
-     always setting `width: 100%;`. This works because we set the width
+     always setting `width: 100%;Preventcolumnsfrombecomingtoonarrowwhenatsmallergridtiersbyalwayssetting`width`. This works because we set the width
      later on to override this initial width. #}
   flex-shrink: 0;
   width: 100%;
